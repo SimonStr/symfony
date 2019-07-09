@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\QuestionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -10,10 +11,12 @@ class indexController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function index()
+    public function index(QuestionRepository $questionRepository)
     {
-//        return new Response("This is a homepaga");
-        return $this->render('pages/index.html.twig');
+        $questions = $questionRepository->findBy([], ['date' => 'DESC']);
+        return $this->render('pages/index.html.twig', [
+            'questions' => $questions,
+        ]);
     }
 
     /**

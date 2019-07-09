@@ -9,11 +9,14 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-8 offcet-2">
+        <div class="col-8 offset-2">
             <h3>{{ question.name }}</h3>
 
             {% if question.description %}
                 <p>{{ question.description }}</p>
+            {% endif %}
+            {% if question.date %}
+                <p>{{ question.date|date }}</p>
             {% endif %}
         </div>
     </div>
