@@ -20,6 +20,7 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Firebase\JWT\JWT;
 
 class UserAuthenticator extends AbstractFormLoginAuthenticator
 {
@@ -86,6 +87,22 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
+
+        $expireTime = time() + 3600;
+        $tokenPayload = [
+            'user_id' => $token->getUser()->getId(),
+            'email'   => $token->getUser()->getEmail(),
+            'exp'     => $expireTime
+        ];
+
+        $jwt = JWT::encode($tokenPayload, getenv("JWT_SECRET"));
+        
+        $useHttps = false;
+        setcookie("jwt", $jwt, $expireTime, "/", "", $useHttps, true);
+
+        return new JsonResponse([
+            'result' => true
+        ]);
 
         // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
 //        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
