@@ -13,10 +13,14 @@ class indexController extends AbstractController
      */
     public function index(QuestionRepository $questionRepository)
     {
-        $questions = $questionRepository->findBy([], ['date' => 'DESC']);
-        return $this->render('pages/index.html.twig', [
-            'questions' => $questions,
+//        $questions = $questionRepository->findBy([], ['date' => 'DESC']);
+//        return $this->render('pages/index.html.twig', [
+//            'questions' => $questions,
+//        ]);
+        return $this->json([
+           "result" => true
         ]);
+
     }
 
     /**
