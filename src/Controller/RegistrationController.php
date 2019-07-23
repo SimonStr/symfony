@@ -22,7 +22,7 @@ class RegistrationController extends AbstractController
     public function register(ObjectManager $om, Request $request, UserPasswordEncoderInterface $passwordEncoder)
 //    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, UserAuthenticator $authenticator): Response
     {
-//        Old registration form
+//        Old registration code
 //        $user = new User();
 //        $form = $this->createForm(RegistrationFormType::class, $user);
 //        $form->handleRequest($request);

@@ -4,10 +4,12 @@ namespace App\Security;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
@@ -47,7 +49,7 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
         $credentials = [
             'email' => $request->request->get('email'),
             'password' => $request->request->get('password'),
-            'csrf_token' => $request->request->get('_csrf_token'),
+//            'csrf_token' => $request->request->get('_csrf_token'),
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
@@ -59,10 +61,10 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $token = new CsrfToken('authenticate', $credentials['csrf_token']);
-        if (!$this->csrfTokenManager->isTokenValid($token)) {
-            throw new InvalidCsrfTokenException();
-        }
+//        $token = new CsrfToken('authenticate', $credentials['csrf_token']);
+//        if (!$this->csrfTokenManager->isTokenValid($token)) {
+//            throw new InvalidCsrfTokenException();
+//        }
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
 
@@ -87,7 +89,26 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
 
         // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
 //        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
-        return new RedirectResponse($this->urlGenerator->generate('index'));
+//        return new RedirectResponse($this->urlGenerator->generate('index'));
+    }
+
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    {
+        return new JsonResponse([
+            'error' => $exception->getMessageKey()
+        ], 400);
+    }
+
+    public function start(Request $request, AuthenticationException $authException = null)
+    {
+        return new JsonResponse([
+            'error' => 'Access Denied'
+        ]);
+    }
+
+    public function supportsRememberMe()
+    {
+        return false;
     }
 
     protected function getLoginUrl()
