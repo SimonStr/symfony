@@ -23,7 +23,7 @@ security:
                 entry_point: App\Security\UserAuthenticator
             logout:
                 path: app_logout
-                target: index
+                success_handler: App\Security\JwtLogoutHandler
             stateless: true
 
             # activate different ways to authenticate

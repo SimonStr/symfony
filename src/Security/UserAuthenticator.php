@@ -96,7 +96,7 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
         ];
 
         $jwt = JWT::encode($tokenPayload, getenv("JWT_SECRET"));
-        
+
         $useHttps = false;
         setcookie("jwt", $jwt, $expireTime, "/", "", $useHttps, true);
 
